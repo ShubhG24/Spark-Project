@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Analysis</title>
+    <style>
+        .center {
+            text-align: center;
+        }
+
+        .center select {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="center">
+        <form action="/submitAnalysis" method="post">
+            <label for="country_code">Country Code:</label>
+            <select id="country_code" name="country_code">
+                <option value="" disabled selected>Select a Country Code</option>
+                {% for code in country_codes %}
+                    <option value="{{ code }}">{{ code }}</option>
+                {% endfor %}
+            </select>
+            <br><br>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</body>
+</html>
