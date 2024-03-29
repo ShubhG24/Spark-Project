@@ -4,19 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>One Analysis</title>
-    <style>
-        .center {
-            text-align: center;
-        }
-
-        .center select {
-            display: inline-block;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/style_oneanalysis.css') }}">
 </head>
 <body>
     <div class="center">
-        <form action="/submitAnalysis" method="post">
+        <form action="/submitAnalysis" method="post" id="analysisForm">
             <label for="country_code">Country Code:</label>
             <select id="country_code" name="country_code">
                 <option value="" disabled selected>Select a Country Code</option>
@@ -25,8 +17,49 @@
                 {% endfor %}
             </select>
             <br><br>
-            <input type="submit" value="Submit">
+            <div id="ageGroupContainer" style="display: none;">
+                <label for="age_group">Age Group:</label>
+                <select id="age_group" name="age_group">
+                    <option value="" disabled selected>Select an Age Group</option>
+                    <option value="0-6 days">0-6 days</option>
+                    <option value="7-27 days">7-27 days</option>
+                    <option value="28-364 days">28-364 days</option>
+                    <option value="1-4 years">1-4 years</option>
+                    <option value="5-9 years">5-9 years</option>
+                    <option value="10-14 years">10-14 years</option>
+                    <option value="15-19 years">15-19 years</option>
+                    <option value="20-24 years">20-24 years</option>
+                    <option value="25-29 years">25-29 years</option>
+                    <option value="30-34 years">30-34 years</option>
+                    <option value="35-39 years">35-39 years</option>
+                    <option value="40-44 years">40-44 years</option>
+                    <option value="45-49 years">45-49 years</option>
+                    <option value="50-54 years">50-54 years</option>
+                    <option value="55-59 years">55-59 years</option>
+                    <option value="60-64 years">60-64 years</option>
+                    <option value="65-69 years">65-69 years</option>
+                    <option value="70-74 years">70-74 years</option>
+                    <option value="75-79 years">75-79 years</option>
+                    <option value="80+ years">80+ years</option>
+                    <option value="All ages">All ages</option>
+                </select>
+                <br><br>
+            </div>
+            <div id="genderContainer" style="display: none;">
+                <label for="gender">Gender:</label>
+                <select id="gender" name="gender">
+                    <option value="" disabled selected>Select a Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Both">Both</option>
+                </select>
+                <br><br>
+            </div>
+            <input type="submit" value="Submit" id="submitButton" disabled>
         </form>
     </div>
+
+    <script src="/js/oneanalysis.js"></script> 
+
 </body>
 </html>

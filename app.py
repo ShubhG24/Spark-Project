@@ -14,9 +14,8 @@ df = spark.read.csv("file:///home/ubuntu/data/mortality_age.csv", header=True, s
 
 # SUPPORTING FUNCTIONS
 def prepopulate():
-    if not session.get('country_codes') and not session.get('age_group'):
+    if not session.get('country_codes'):
         session['country_codes'] = df.select("Country Code").distinct().rdd.flatMap(lambda x: x).collect()
-        session['age_group'] = df.select("Age Group").distinct().rdd.flatMap(lambda x: x).collect()
 
 # ROUTES
 @app.route('/', methods=['GET'])

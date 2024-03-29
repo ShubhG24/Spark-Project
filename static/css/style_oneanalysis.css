@@ -1,0 +1,7 @@
+.center {
+    text-align: center;
+}
+
+.center select {
+    display: inline-block;
+}
