@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>One Analysis</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='/css/style_oneanalysis.css') }}">
 </head>
 <body>
+    <a href="/" class="btn btn-primary home-btn">Home</a>
+    
     <div class="center">
         <form action="/oneAnalysis" method="post" id="analysisForm">
             <label for="country_code">Country Code:</label>
@@ -244,11 +247,11 @@
     </div>
     <script src="/js/oneanalysis.js"></script> 
 
-    {% if plot %}
+    {% if plot1 and plot2 %}
     <div class="center">
-        <img src="data:image/png;base64,{{ plot }}" alt="Plot">
+        <img src="data:image/png;base64,{{ plot1 }}" alt="Plot1">
+        <img src="data:image/png;base64,{{ plot2 }}" alt="Plot2">
     </div>
     {% endif %}
-    
 </body>
 </html>

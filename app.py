@@ -37,33 +37,53 @@ def oneAnalysis():
         age_group = str(request.form['age_group'])
         gender = str(request.form['gender'])
         
+        # Gather data on Number of Deaths
         df_filtered = df.filter((df["Country Code"] == country_code) & (df["Age Group"] == age_group) & (df["Sex"] == gender))
         df_grouped = df_filtered.groupBy("Year").agg(functions.sum("Number of Deaths").alias("Total Deaths"))
         data = df_grouped.collect()
         
         x_vals = [row["Year"] for row in data]
-        y_vals = [row["Total Deaths"] for row in data]
+        y1_vals = [row["Total Deaths"] for row in data]
         
-        # Create plot using matplotlib
-        fig, ax = plt.subplots()
-        ax.bar(x_vals, y_vals)
-        plt.xlabel('Year')
-        plt.ylabel('Number of Deaths')
-        plt.title("Number of {} Deaths by Year in {} ({})".format(gender, country_code, age_group))
+        # Create plot 1 
+        fig, ax1 = plt.subplots()
+        ax1.bar(x_vals, y1_vals)
+        ax1.set_xlabel('Year')
+        ax1.set_ylabel('Number of Deaths')
+        ax1.set_title("Number of {} Deaths by Year in {} ({})".format(gender, country_code, age_group))
         
-        # Send the plot to frontend
-        plot_buf = io.BytesIO()
-        plt.savefig(plot_buf, format='png')
-        plot_buf.seek(0)
-        plot_base64 = base64.b64encode(plot_buf.read()).decode('utf-8')
-        plt.close()  
+        # Send the plot1 to frontend
+        plot1_buf = io.BytesIO()
+        plt.savefig(plot1_buf, format='png')
+        plot1_buf.seek(0)
+        plot1_base64 = base64.b64encode(plot1_buf.read()).decode('utf-8')
+        plt.close(fig)  
+        
+        #Gather data on Death rate
+        df_filtered = df.filter((df["Country Code"] == country_code) & (df["Age Group"] == age_group) & (df["Sex"] == gender))
+        df_grouped = df_filtered.groupBy("Year").agg(functions.sum("Death Rate Per 100,000").alias("Death Rate"))
+        data = df_grouped.collect()
+        
+        y2_vals = [row["Death Rate"] for row in data]
+        # Create plot 2
+        fig, ax2 = plt.subplots()
+        ax2.bar(x_vals, y2_vals)
+        ax2.set_xlabel('Year')
+        ax2.set_ylabel('Death rate')
+        ax2.set_title("Death rate per 100,000 for {} by Year in {} ({})".format(gender, country_code, age_group))
 
-        return render_template('oneAnalysis.html', plot=plot_base64)
-    return render_template('oneAnalysis.html', plot=None)
+        # Send plot2 to frontend
+        plot2_buf = io.BytesIO()
+        plt.savefig(plot2_buf, format='png')
+        plot2_buf.seek(0)
+        plot2_base64 = base64.b64encode(plot2_buf.read()).decode('utf-8')
+        plt.close(fig)
+        
+        return render_template('oneAnalysis.html', plot1=plot1_base64, plot2=plot2_base64)
+    return render_template('oneAnalysis.html', plot1=None, plot2=None)
 
 @app.route('/allAnalysis', methods=['GET'])
 def allAnalysis():
-    prepopulate()
     return render_template('allAnalysis.html')
 
 if __name__ == '__main__':
