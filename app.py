@@ -12,6 +12,7 @@ app.secret_key = 'spark'
 
 spark = SparkSession \
     .builder \
+    .master("local") \
     .appName("Mortality Analysis") \
     .getOrCreate()
 
