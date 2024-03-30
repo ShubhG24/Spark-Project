@@ -12,7 +12,6 @@ app.secret_key = 'spark'
 
 spark = SparkSession \
     .builder \
-    .master("local") \
     .appName("Mortality Analysis") \
     .getOrCreate()
 
@@ -87,9 +86,66 @@ def oneAnalysis():
         return render_template('oneAnalysis.html', plot1=plot1_base64, plot2=plot2_base64)
     return render_template('oneAnalysis.html', plot1=None, plot2=None)
 
-@app.route('/allAnalysis', methods=['GET'])
+@app.route('/allAnalysis', methods=['GET', 'POST'])
 def allAnalysis():
-    return render_template('allAnalysis.html')
+    if request.method == 'POST':
+        age_group = str(request.form['age_group'])
+        gender = str(request.form['gender'])
+        year = str(request.form['year'])
+        
+        df_filtered = df.filter((df["Age Group"] == age_group) & (df["Sex"] == gender) & (df["Year"] == year))
+        
+        # Gather data on Number of Deaths
+        df_grouped_1 = df_filtered.groupBy("Country Code").agg(functions.sum("Number of Deaths").alias("Total Deaths"))
+        
+        # Gather data on Death rate
+        df_grouped_2 = df_filtered.groupBy("Country Code").agg(functions.sum("Death Rate Per 100,000").alias("Death Rate"))
+        
+        # Collect data from data frame
+        data_1 = df_grouped_1.collect()
+        data_2 = df_grouped_2.collect()
+        
+        x_vals = [row["Country Code"] for row in data_1]
+        x_indices = range(len(x_vals))  # Create numerical indices for x-axis
+        
+        y1_vals = [row["Total Deaths"] for row in data_1]
+        y2_vals = [row["Death Rate"] for row in data_2]
+
+        # Create plot 1 
+        fig, ax1 = plt.subplots()
+        ax1.set_title("Number of {} Deaths by Countries in {} ({})".format(gender, year, age_group))
+        ax1.bar(x_vals, y1_vals)
+        ax1.set_xlabel('Countries')
+        ax1.set_ylabel('Number of Deaths')
+        ax1.set_xticks(x_indices)    # Set the tick pos
+        ax1.set_xticklabels(x_vals)  # Set the tick labels to be country codes
+        
+        # Send the plot1 to frontend
+        plot1_buf = io.BytesIO()
+        plt.savefig(plot1_buf, format='png')
+        plot1_buf.seek(0)
+        plot1_base64 = base64.b64encode(plot1_buf.read()).decode('utf-8')
+        plt.close(fig)  
+
+        # Create plot 2
+        fig, ax2 = plt.subplots()
+        ax2.set_title("Death rate per 100,000 for {} by Countries in {} ({})".format(gender, year, age_group))
+        ax2.bar(x_vals, y2_vals)
+        ax2.set_xlabel('Countries')
+        ax2.set_ylabel('Death rate')
+        ax2.set_xticks(x_indices)   
+        ax2.set_xticklabels(x_vals)  
+        
+
+        # Send plot2 to frontend
+        plot2_buf = io.BytesIO()
+        plt.savefig(plot2_buf, format='png')
+        plot2_buf.seek(0)
+        plot2_base64 = base64.b64encode(plot2_buf.read()).decode('utf-8')
+        plt.close(fig)
+        
+        return render_template('allAnalysis.html', plot1=plot1_base64, plot2=plot2_base64)
+    return render_template('allAnalysis.html', plot1=None, plot2=None)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
