@@ -16,7 +16,6 @@ spark = SparkSession \
     .appName("Mortality Analysis") \
     .getOrCreate()
 
-
 df = spark.read.csv("file:///home/ubuntu/data/mortality_age.csv", header=True, sep=",")
 
 # Remove commas from the "Number of Deaths" and "Death Rate per 100,000" columns and cast them to appropriate types
@@ -46,7 +45,7 @@ def oneAnalysis():
         # Gather data on Number of Deaths
         df_grouped_1 = df_filtered.groupBy("Year").agg(functions.sum("Number of Deaths").alias("Total Deaths"))
         
-        #Gather data on Death rate
+        # Gather data on Death rate
         df_grouped_2 = df_filtered.groupBy("Year").agg(functions.sum("Death Rate Per 100,000").alias("Death Rate"))
         
         # Collect data from data frame
