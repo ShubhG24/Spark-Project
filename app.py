@@ -113,14 +113,18 @@ def allAnalysis():
         y2_vals = [row["Death Rate"] for row in data_2]
 
         # Create plot 1 
-        fig, ax1 = plt.subplots()
+        fig, ax1 = plt.subplots(figsize=(12, 10))
         ax1.set_title("Number of {} Deaths by Countries in {} ({})".format(gender, year, age_group))
-        ax1.bar(x_ticks, y1_vals)
+        ax1.bar(x_ticks, y1_vals, width=0.5)
         ax1.set_xlabel('Countries')
         ax1.set_ylabel('Number of Deaths')
-        ax1.set_xticks(x_ticks)    
-        ax1.set_xticklabels(x_vals)  # Set the tick labels to be country codes
+        ax1.set_xticklabels([])    #no labels for x-axis
+        plt.xlim([0, len(x_ticks)])
         
+        # Add country codes on top of each bar
+        for i, val in enumerate(y1_vals):
+            ax1.text(x_ticks[i], val + 10, x_vals[i], ha='center', va='bottom', fontsize=6, rotation=90)
+                
         # Send the plot1 to frontend
         plot1_buf = io.BytesIO()
         plt.savefig(plot1_buf, format='png')
@@ -129,14 +133,16 @@ def allAnalysis():
         plt.close(fig)  
 
         # Create plot 2
-        fig, ax2 = plt.subplots()
+        fig, ax2 = plt.subplots(figsize=(12, 10))
         ax2.set_title("Death rate per 100,000 for {} by Countries in {} ({})".format(gender, year, age_group))
-        ax2.bar(x_ticks, y2_vals)
+        ax2.bar(x_ticks, y2_vals, width=0.5)
         ax2.set_xlabel('Countries')
         ax2.set_ylabel('Death rate')
-        ax2.set_xticks(x_ticks)   
-        ax2.set_xticklabels(x_vals)  
+        ax2.set_xticklabels([])  
+        plt.xlim([0, len(x_ticks)]) 
         
+        for i, val in enumerate(y2_vals):
+            ax2.text(x_ticks[i], val + 10, x_vals[i], ha='center', va='bottom', fontsize=6, rotation=90)
 
         # Send plot2 to frontend
         plot2_buf = io.BytesIO()
