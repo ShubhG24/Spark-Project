@@ -12,7 +12,7 @@ app.secret_key = 'spark'
 
 spark = SparkSession \
     .builder \
-    .master("local") \
+    .master("local[*]") \
     .appName("Mortality Analysis") \
     .getOrCreate()
 
@@ -106,19 +106,19 @@ def allAnalysis():
         data_1 = df_grouped_1.collect()
         data_2 = df_grouped_2.collect()
         
-        x_vals = [row["Country Code"] for row in data_1]
-        x_indices = range(len(x_vals))  # Create numerical indices for x-axis
+        x_ticks = list(range(len(data_1)))  # Create numerical ticks for x-axis
         
+        x_vals = [row["Country Code"] for row in data_1]
         y1_vals = [row["Total Deaths"] for row in data_1]
         y2_vals = [row["Death Rate"] for row in data_2]
 
         # Create plot 1 
         fig, ax1 = plt.subplots()
         ax1.set_title("Number of {} Deaths by Countries in {} ({})".format(gender, year, age_group))
-        ax1.bar(x_vals, y1_vals)
+        ax1.bar(x_ticks, y1_vals)
         ax1.set_xlabel('Countries')
         ax1.set_ylabel('Number of Deaths')
-        ax1.set_xticks(x_indices)    # Set the tick pos
+        ax1.set_xticks(x_ticks)    
         ax1.set_xticklabels(x_vals)  # Set the tick labels to be country codes
         
         # Send the plot1 to frontend
@@ -131,10 +131,10 @@ def allAnalysis():
         # Create plot 2
         fig, ax2 = plt.subplots()
         ax2.set_title("Death rate per 100,000 for {} by Countries in {} ({})".format(gender, year, age_group))
-        ax2.bar(x_vals, y2_vals)
+        ax2.bar(x_ticks, y2_vals)
         ax2.set_xlabel('Countries')
         ax2.set_ylabel('Death rate')
-        ax2.set_xticks(x_indices)   
+        ax2.set_xticks(x_ticks)   
         ax2.set_xticklabels(x_vals)  
         
 
