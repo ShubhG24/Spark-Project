@@ -107,15 +107,16 @@ def allAnalysis():
         data_2 = df_grouped_2.collect()
         
         x_ticks = list(range(len(data_1)))  # Create numerical ticks for x-axis
+        bar_width = 0.5
         
         x_vals = [row["Country Code"] for row in data_1]
         y1_vals = [row["Total Deaths"] for row in data_1]
         y2_vals = [row["Death Rate"] for row in data_2]
 
         # Create plot 1 
-        fig, ax1 = plt.subplots(figsize=(12, 10))
+        fig, ax1 = plt.subplots(figsize=(18, 7.5))
         ax1.set_title("Number of {} Deaths by Countries in {} ({})".format(gender, year, age_group))
-        ax1.bar(x_ticks, y1_vals, width=0.5)
+        ax1.bar(x_ticks, y1_vals, width=bar_width)
         ax1.set_xlabel('Countries')
         ax1.set_ylabel('Number of Deaths')
         ax1.set_xticklabels([])    #no labels for x-axis
@@ -123,7 +124,11 @@ def allAnalysis():
         
         # Add country codes on top of each bar
         for i, val in enumerate(y1_vals):
-            ax1.text(x_ticks[i], val + 10, x_vals[i], ha='center', va='bottom', fontsize=6, rotation=90)
+            if i % 2 == 0:
+                #val + k must be sufficiently large compared to plot values in order to see the shift of the bar labels
+                ax1.text(x_ticks[i] + bar_width/2, val + 4000, x_vals[i], ha='center', va='bottom', fontsize=5.5, rotation=90)
+            else: 
+                ax1.text(x_ticks[i] + bar_width/2, val + 1000, x_vals[i], ha='center', va='bottom', fontsize=5.5, rotation=90)
                 
         # Send the plot1 to frontend
         plot1_buf = io.BytesIO()
@@ -133,16 +138,20 @@ def allAnalysis():
         plt.close(fig)  
 
         # Create plot 2
-        fig, ax2 = plt.subplots(figsize=(12, 10))
+        fig, ax2 = plt.subplots(figsize=(18, 7.5))
         ax2.set_title("Death rate per 100,000 for {} by Countries in {} ({})".format(gender, year, age_group))
-        ax2.bar(x_ticks, y2_vals, width=0.5)
+        ax2.bar(x_ticks, y2_vals, width=bar_width)
         ax2.set_xlabel('Countries')
         ax2.set_ylabel('Death rate')
         ax2.set_xticklabels([])  
         plt.xlim([0, len(x_ticks)]) 
         
         for i, val in enumerate(y2_vals):
-            ax2.text(x_ticks[i], val + 10, x_vals[i], ha='center', va='bottom', fontsize=6, rotation=90)
+            if i % 2 == 0:
+                #val + k must be sufficiently large compared to plot values in order to see the shift of the bar labels
+                ax2.text(x_ticks[i] + bar_width/2, val + 10, x_vals[i], ha='center', va='bottom', fontsize=5.5, rotation=90)
+            else:
+                ax2.text(x_ticks[i] + bar_width/2, val + 16, x_vals[i], ha='center', va='bottom', fontsize=5.5, rotation=90)
 
         # Send plot2 to frontend
         plot2_buf = io.BytesIO()
