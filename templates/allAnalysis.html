@@ -16,27 +16,9 @@
                 <label for="age_group">Age Group:</label>
                 <select id="age_group" name="age_group">
                     <option value="" disabled selected>Select an Age Group</option>
-                    <option value="0-6 days">0-6 days</option>
-                    <option value="7-27 days">7-27 days</option>
-                    <option value="28-364 days">28-364 days</option>
-                    <option value="1-4 years">1-4 years</option>
-                    <option value="5-9 years">5-9 years</option>
-                    <option value="10-14 years">10-14 years</option>
-                    <option value="15-19 years">15-19 years</option>
-                    <option value="20-24 years">20-24 years</option>
-                    <option value="25-29 years">25-29 years</option>
-                    <option value="30-34 years">30-34 years</option>
-                    <option value="35-39 years">35-39 years</option>
-                    <option value="40-44 years">40-44 years</option>
-                    <option value="45-49 years">45-49 years</option>
-                    <option value="50-54 years">50-54 years</option>
-                    <option value="55-59 years">55-59 years</option>
-                    <option value="60-64 years">60-64 years</option>
-                    <option value="65-69 years">65-69 years</option>
-                    <option value="70-74 years">70-74 years</option>
-                    <option value="75-79 years">75-79 years</option>
-                    <option value="80+ years">80+ years</option>
-                    <option value="All ages">All ages</option>
+                    {% for age in age_group %}
+                        <option value="{{ age }}">{{ age }}</option>
+                    {% endfor %}
                 </select>
                 <br><br>
             </div>

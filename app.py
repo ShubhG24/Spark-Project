@@ -23,9 +23,18 @@ df = df.withColumn("Number of Deaths", functions.regexp_replace(df["Number of De
     .withColumn("Death Rate Per 100,000", functions.regexp_replace(df["Death Rate Per 100,000"], ",", "").cast("float"))
 df.cache() #caching to improve performance
 
+# SUPPORTING FUNCTIONS
+def prepopulate_data():
+    # We collect all distinct country codes, sort them, then convert df to rdd, then flatten each row into its constituent elements. 
+    session['country_codes'] = df.select("Country Code").distinct().orderBy("Country Code").rdd.flatMap(lambda x: x).collect()
+
+    # We collect all distinct age groups, sort them, then convert df to rdd, then flatten each row into its constituent elements. 
+    session['age_group'] = df.select("Age Group").distinct().orderBy("Age Group").rdd.flatMap(lambda x: x).collect()
+
 # ROUTES
 @app.route('/', methods=['GET'])
 def homepage(): 
+    prepopulate_data()
     return render_template('home.html')
 
 @app.route('/close', methods=['GET'])
@@ -84,8 +93,8 @@ def oneAnalysis():
         plot2_base64 = base64.b64encode(plot2_buf.read()).decode('utf-8')
         plt.close(fig)
         
-        return render_template('oneAnalysis.html', plot1=plot1_base64, plot2=plot2_base64)
-    return render_template('oneAnalysis.html', plot1=None, plot2=None)
+        return render_template('oneAnalysis.html', country_codes = session.get('country_codes'), age_group = session.get('age_group'), plot1=plot1_base64, plot2=plot2_base64)
+    return render_template('oneAnalysis.html', country_codes = session.get('country_codes'), age_group = session.get('age_group'), plot1=None, plot2=None)
 
 @app.route('/allAnalysis', methods=['GET', 'POST'])
 def allAnalysis():
@@ -149,7 +158,7 @@ def allAnalysis():
         for i, val in enumerate(y2_vals):
             if i % 2 == 0:
                 #val + k must be sufficiently large compared to plot values in order to see the shift of the bar labels
-                ax2.text(x_ticks[i] + bar_width/2, val + 10, x_vals[i], ha='center', va='bottom', fontsize=5.5, rotation=90)
+                ax2.text(x_ticks[i] + bar_width/2, val + 12, x_vals[i], ha='center', va='bottom', fontsize=5.5, rotation=90)
             else:
                 ax2.text(x_ticks[i] + bar_width/2, val + 16, x_vals[i], ha='center', va='bottom', fontsize=5.5, rotation=90)
 
@@ -160,8 +169,8 @@ def allAnalysis():
         plot2_base64 = base64.b64encode(plot2_buf.read()).decode('utf-8')
         plt.close(fig)
         
-        return render_template('allAnalysis.html', plot1=plot1_base64, plot2=plot2_base64)
-    return render_template('allAnalysis.html', plot1=None, plot2=None)
+        return render_template('allAnalysis.html', age_group = session.get('age_group'), plot1=plot1_base64, plot2=plot2_base64)
+    return render_template('allAnalysis.html', age_group = session.get('age_group'), plot1=None, plot2=None)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
