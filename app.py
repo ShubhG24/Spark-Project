@@ -26,10 +26,10 @@ df.cache() #caching to improve performance
 # SUPPORTING FUNCTIONS
 def prepopulate_data():
     if not session.get('country_codes') and not session.get('age_group'):
-        # We collect all distinct country codes, sort them, then convert df to rdd, then flatten each row into its constituent elements. 
+        # Collect all distinct country codes, sort them, then convert df to rdd, then flatten each row into its constituent elements. 
         session['country_codes'] = df.select("Country Code").distinct().orderBy("Country Code").rdd.flatMap(lambda x: x).collect()
 
-        # We collect all distinct age groups, sort them, then convert df to rdd, then flatten each row into its constituent elements. 
+        # Collect all distinct age groups, sort them, then convert df to rdd, then flatten each row into its constituent elements. 
         session['age_group'] = df.select("Age Group").distinct().orderBy("Age Group").rdd.flatMap(lambda x: x).collect()
 
 # ROUTES
