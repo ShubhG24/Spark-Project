@@ -73,7 +73,7 @@ def oneAnalysis():
         ax1.set_ylabel('Number of Deaths')
         ax1.set_title("Number of {} Deaths by Year in {} ({})".format(gender, country_code, age_group))
         
-        # Send the plot1 to frontend
+        # Save plot1 in png format to send to frontend
         plot1_buf = io.BytesIO()
         plt.savefig(plot1_buf, format='png')
         plot1_buf.seek(0)
@@ -87,7 +87,7 @@ def oneAnalysis():
         ax2.set_ylabel('Death rate')
         ax2.set_title("Death rate per 100,000 for {} by Year in {} ({})".format(gender, country_code, age_group))
 
-        # Send plot2 to frontend
+        # Save plot2 in png format to send to frontend
         plot2_buf = io.BytesIO()
         plt.savefig(plot2_buf, format='png')
         plot2_buf.seek(0)
@@ -123,7 +123,7 @@ def allAnalysis():
         y1_vals = [row["Total Deaths"] for row in data_1]
         y2_vals = [row["Death Rate"] for row in data_2]
 
-        # Create plot 1 
+        # Create plot1 
         fig, ax1 = plt.subplots(figsize=(18, 7.5))
         ax1.set_title("Number of {} Deaths by Countries in {} ({})".format(gender, year, age_group))
         ax1.bar(x_ticks, y1_vals, width=bar_width)
@@ -140,14 +140,14 @@ def allAnalysis():
             else: 
                 ax1.text(x_ticks[i] + bar_width/2, val + 1000, x_vals[i], ha='center', va='bottom', fontsize=5.5, rotation=90)
                 
-        # Send the plot1 to frontend
+        # Save plot1 in png format to send to frontend
         plot1_buf = io.BytesIO()
         plt.savefig(plot1_buf, format='png')
         plot1_buf.seek(0)
         plot1_base64 = base64.b64encode(plot1_buf.read()).decode('utf-8')
         plt.close(fig)  
 
-        # Create plot 2
+        # Create plot2
         fig, ax2 = plt.subplots(figsize=(18, 7.5))
         ax2.set_title("Death rate per 100,000 for {} by Countries in {} ({})".format(gender, year, age_group))
         ax2.bar(x_ticks, y2_vals, width=bar_width)
@@ -163,7 +163,7 @@ def allAnalysis():
             else:
                 ax2.text(x_ticks[i] + bar_width/2, val + 16, x_vals[i], ha='center', va='bottom', fontsize=5.5, rotation=90)
 
-        # Send plot2 to frontend
+        # Save plot2 in png format to send to frontend
         plot2_buf = io.BytesIO()
         plt.savefig(plot2_buf, format='png')
         plot2_buf.seek(0)
