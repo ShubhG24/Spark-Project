@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compare Countries</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/style_allanalysis.css') }}">
+</head>
+<body>
+    <a href="/" class="btn btn-primary home-btn">Home</a>
+    
+    <div class="center">
+        <form action="/compareCountries" method="post" id="compareForm" target="_blank">
+            <div id="countryContainer1">
+                <label for="country1">Select first country:</label><br>
+                <select id="country1" name="country1">
+                    {% for country in countries %}
+                        <option value="{{ country }}">{{ country }}</option>
+                    {% endfor %}
+                </select>
+                <br><br>
+            </div>
+            <div id="countryContainer2">
+                <label for="country2">Select second country:</label><br>
+                <select id="country2" name="country2">
+                    {% for country in countries %}
+                        <option value="{{ country }}">{{ country }}</option>
+                    {% endfor %}
+                </select>
+                <br><br>
+            </div>
+            <div id="metricContainer">
+                <label for="metric">Select metric:</label>
+                <select id="metric" name="metric">
+                    <option value="Total Deaths">Death Counts</option>
+                    <option value="Death Rate">Death Ratio</option>
+                    <option value="Infant Mortality Rate">Infant Mortality Rate</option>
+                </select>
+                <br><br>
+            </div>
+            <input type="submit" value="Compare" id="compareButton">
+        </form>
+    </div>
+    <script src="/js/compare.js"></script> 
+
+    {% if plot %}
+    <div class="center">
+        <img src="data:image/png;base64,{{ plot }}" alt="Comparison Plot">
+    </div>
+    {% endif %}
+</body>
+</html>
